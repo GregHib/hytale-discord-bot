@@ -20,6 +20,9 @@ class Crawler(var directory: ImageDirectory, val callback: (ImageDirectory) -> U
         //Just in case
         var overflow = 0
 
+        //Check one before the last known (don't need to recheck all) and minimum is 0
+        count = Math.max(directory.lastUpdate - 1, 0)
+
         while(!finished) {
             //Begin
             start()
@@ -88,6 +91,7 @@ class Crawler(var directory: ImageDirectory, val callback: (ImageDirectory) -> U
             //Open connection to url
             val connection = URL(url).openConnection() as HttpURLConnection
             //with header info
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
             connection.requestMethod = "HEAD"
             //returns a response
             val responseCode = connection.responseCode
@@ -97,11 +101,6 @@ class Crawler(var directory: ImageDirectory, val callback: (ImageDirectory) -> U
             }
             //Return if valid (200) response code, otherwise 404 not found.
             return responseCode == 200
-        }
-
-        @JvmStatic
-        fun main(args: Array<String>) {
-            println(isValidUrl("https://hytale.com/static/images/media/conceptArt/1.jpg"))
         }
     }
 }
